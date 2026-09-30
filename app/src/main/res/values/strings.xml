@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QuickBar</string>
+
+    <!-- Quick settings tiles -->
+    <string name="tile_panel_label">QuickBar</string>
+    <string name="tile_panel_desc">Open the shortcut panel</string>
+    <string name="tile_slot_1_label">Slot 1</string>
+    <string name="tile_slot_2_label">Slot 2</string>
+    <string name="tile_slot_3_label">Slot 3</string>
+    <string name="tile_slot_4_label">Slot 4</string>
+    <string name="tile_slot_5_label">Slot 5</string>
+    <string name="tile_slot_6_label">Slot 6</string>
+    <string name="tile_slot_unbound">Not set</string>
+
+    <!-- Main screen -->
+    <string name="title_shortcuts">Shortcuts</string>
+    <string name="title_slots">Quick settings tiles</string>
+    <string name="title_help">How to use</string>
+    <string name="action_add">Add shortcut</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_close">Close</string>
+    <string name="action_unbind">Unbind</string>
+    <string name="action_bound">Bound</string>
+    <string name="action_add_tile">Add</string>
+    <string name="action_open_settings">Open app settings</string>
+    <string name="tile_show_in_shade">Show in the shade</string>
+    <string name="tile_removed">Tile removed from the shade</string>
+    <string name="tile_restored">Tile available again, add it from the shade</string>
+    <string name="action_restore_all_tiles">Restore all hidden tiles</string>
+
+    <!-- Shortcut model -->
+    <string name="type_image">Image</string>
+    <string name="type_video">Video</string>
+    <string name="type_unknown">File</string>
+    <string name="default_shortcut_title">Untitled</string>
+    <string name="field_title">Name</string>
+    <string name="field_title_hint">Shortcut name</string>
+    <string name="field_show_in_panel">Show in QuickBar panel</string>
+    <string name="field_icon">Icon</string>
+    <string name="label_type">Type: %1$s</string>
+    <string name="label_bound_to">Bound: %1$s</string>
+    <plurals name="panel_shortcut_count">
+        <item quantity="one">%1$d shortcut</item>
+        <item quantity="other">%1$d shortcuts</item>
+    </plurals>
+
+    <!-- Icon picker -->
+    <string name="icon_picker_title">Choose an icon</string>
+    <string name="icon_search_hint">Search icons</string>
+    <string name="icon_group_media">Media</string>
+    <string name="icon_group_files">Files</string>
+    <string name="icon_group_transfer">Transfer</string>
+    <string name="icon_group_favorites">Favorites</string>
+    <string name="icon_group_playback">Playback</string>
+    <string name="icon_group_places">Places</string>
+    <string name="icon_group_tools">Tools</string>
+    <string name="icon_group_system">System</string>
+    <string name="icon_search_empty">No matching icon</string>
+
+    <!-- Slot binding -->
+    <string name="slot_panel_title">QuickBar panel</string>
+    <string name="slot_empty_hint">Pick a shortcut for this tile. Its name becomes the tile name.</string>
+
+    <!-- Empty / error states -->
+    <string name="empty_shortcuts">No shortcuts yet. Tap + to add an image or a video.</string>
+    <string name="empty_panel">No shortcuts to show. Add one, or enable it for the panel.</string>
+    <string name="error_no_viewer">No app can open this file</string>
+    <string name="error_persist_permission">Access to this file was lost. Pick the file again to restore the shortcut.</string>
+    <string name="error_shortcut_missing">This shortcut no longer exists</string>
+    <string name="error_unknown_mime">Could not read the file type. The shortcut may not open correctly.</string>
+    <string name="error_open_settings">Could not open the settings screen</string>
+    <string name="error_tile_add_unsupported">This Android version cannot add tiles from an app. Open the shade, tap edit (pencil) and pick a QuickBar tile.</string>
+
+    <!-- Help -->
+    <string name="help_intro">QuickBar puts your favourite images and videos one tap away in the notification shade.</string>
+    <string name="help_step_1_1">1. Add tiles to the shade</string>
+    <string name="help_step_1_2">Tap “Add” next to a tile below and confirm the system prompt. If your system does not offer that prompt, pull the shade down, tap the edit (pencil) button and drag the QuickBar tiles into place.</string>
+    <string name="help_step_2_1">2. Create shortcuts</string>
+    <string name="help_step_2_2">Tap + and choose an image or video. Give it a name and pick one of the 100 built-in line icons.</string>
+    <string name="help_step_3_1">3. Bind a tile for one-tap access</string>
+    <string name="help_step_3_2">Tap a slot below to bind a shortcut to it, or long press that tile in the shade to bind it right there. Tapping the tile then opens the file directly, with no extra step.</string>
+    <string name="help_note_title">About tile icons</string>
+    <string name="help_note_body">Android reads a quick settings tile icon from its manifest entry, so it cannot be swapped at runtime. That is why direct tiles use one of six fixed line icons. A direct tile does follow the shortcut bound to it, so renaming that shortcut renames the tile. The QuickBar panel tile is the one that gives you the full 100-icon library, plus fully custom names.</string>
+    <string name="help_xiaomi_title">Xiaomi / HyperOS</string>
+    <string name="help_xiaomi_body">HyperOS blocks activity launches that come from the background, which is what a quick settings tile is. QuickBar routes every tile tap through the system so it keeps working with the app closed. If a tile still refuses to open anything, allow background pop-ups for QuickBar below, and keep QuickBar out of the battery saver whitelist restrictions.</string>
+    <string name="help_remove_title">Removing a tile</string>
+    <string name="help_remove_body">Android gives apps no way to take a tile back out of the shade, so each tile below has a switch that does it for you: turn it off and the tile disappears from the control centre, turn it back on and it can be added again. Binding and naming are kept, so nothing is lost. You can also remove a tile the system way: pull the shade down, tap edit, then drag it out of the active row.</string>
+</resources>

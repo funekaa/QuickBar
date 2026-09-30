@@ -1,0 +1,9 @@
+# Normalise line endings in the repository so diffs stay readable across platforms.
+* text=auto eol=lf
+
+# Windows needs CRLF for these.
+*.bat text eol=crlf
+gradlew text eol=lf
+*.jks binary
+*.jar binary
+*.keystore binary
