@@ -14,6 +14,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,24 +33,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -198,6 +201,7 @@ private fun MainScreen(
 ) {
     var editing by remember { mutableStateOf<Shortcut?>(null) }
     var bindingSlot by remember { mutableStateOf<Int?>(null) }
+    var showHelp by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     // A long press on a tile arrives through onNewIntent after this screen is already up.
@@ -206,7 +210,19 @@ private fun MainScreen(
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.app_name)) },
+                actions = {
+                    IconButton(onClick = { showHelp = true }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
+                            contentDescription = stringResource(R.string.title_help),
+                        )
+                    }
+                },
+            )
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onAdd,
@@ -223,10 +239,6 @@ private fun MainScreen(
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 96.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            item(key = "help") {
-                HelpCard(onOpenRomSettings, isTileVisible)
-            }
-
             item(key = "header_shortcuts") {
                 SectionHeader(stringResource(R.string.title_shortcuts))
             }
@@ -295,6 +307,14 @@ private fun MainScreen(
             onDismiss = { bindingSlot = null },
         )
     }
+
+    if (showHelp) {
+        HelpSheet(
+            isTileVisible = isTileVisible,
+            onOpenRomSettings = onOpenRomSettings,
+            onDismiss = { showHelp = false },
+        )
+    }
 }
 
 @Composable
@@ -307,27 +327,35 @@ private fun SectionHeader(text: String, modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * Help lives behind the toolbar question mark rather than in the list, because it used to push
+ * the shortcuts below the fold. A sheet is used instead of a dialog so the text scrolls.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HelpCard(
-    onOpenRomSettings: () -> Unit,
+private fun HelpSheet(
     isTileVisible: (Context, Class<out TileService>) -> Boolean,
+    onOpenRomSettings: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
-    val hiddenCount = Tiles.all.count { !isTileVisible(context, it) }
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-    ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(text = stringResource(R.string.title_help), style = MaterialTheme.typography.titleSmall)
-            }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    // Recomputed after an action so the restore button disappears once nothing is hidden.
+    var refresh by remember { mutableIntStateOf(0) }
+    val hiddenCount = remember(refresh) {
+        Tiles.all.count { !isTileVisible(context, it) }
+    }
+
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
             Text(stringResource(R.string.help_intro), style = MaterialTheme.typography.bodyMedium)
             HelpStep(stringResource(R.string.help_step_1_1), stringResource(R.string.help_step_1_2))
             HelpStep(stringResource(R.string.help_step_2_1), stringResource(R.string.help_step_2_2))
@@ -342,6 +370,7 @@ private fun HelpCard(
             if (hiddenCount > 0) {
                 OutlinedButton(onClick = {
                     Tiles.all.forEach { TileAvailability.setVisible(context, it, true) }
+                    refresh++
                 }) {
                     Text(stringResource(R.string.action_restore_all_tiles))
                 }
@@ -407,7 +436,7 @@ private fun ShortcutRow(shortcut: Shortcut, boundSlotLabel: String?, onClick: ()
                 text = buildString {
                     append(stringResource(R.string.label_type, stringResource(typeLabelRes(shortcut.targetType))))
                     boundSlotLabel?.let {
-                        append("  路  ")
+                        append("  鐠? ")
                         append(it)
                     }
                 },
