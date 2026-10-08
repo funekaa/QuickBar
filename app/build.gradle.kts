@@ -17,8 +17,8 @@ val keystoreProperties = Properties().apply {
     }
 }
 
-val appVersionName = "1.0.2"
-val appVersionCode = 3
+val appVersionName = "1.0.5"
+val appVersionCode = 6
 
 android {
     namespace = "com.picdraw.quickbar"
@@ -93,6 +93,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
+
+    // Image decoding for the built-in viewer. Handles downsampling, EXIF rotation, threading
+    // and the bitmap cache, which is most of what a viewer needs to get right.
+    implementation("io.coil-kt:coil-compose:2.7.0")
 }
 
 // AGP 8 removed the only API that could rename an APK, so the artifact is renamed once the

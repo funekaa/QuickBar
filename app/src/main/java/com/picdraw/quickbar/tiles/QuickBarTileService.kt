@@ -4,7 +4,6 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.annotation.StringRes
 import com.picdraw.quickbar.R
-import com.picdraw.quickbar.data.Opener
 import com.picdraw.quickbar.data.ShortcutRepository
 import com.picdraw.quickbar.panel.QuickBarPanelActivity
 
