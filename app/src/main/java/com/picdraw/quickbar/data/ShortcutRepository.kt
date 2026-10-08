@@ -1,8 +1,6 @@
 package com.picdraw.quickbar.data
 
 import android.content.Context
-import android.net.Uri
-import android.provider.OpenableColumns
 import android.service.quicksettings.TileService
 import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -114,8 +112,6 @@ class ShortcutRepository private constructor(private val appContext: Context) {
             uri = uri,
             targetType = type,
             iconKey = obj.optString("icon").takeIf { it.isNotEmpty() } ?: IconCatalog.DEFAULT_KEY,
-            // Shortcuts written before this field existed fall back to the type's own MIME.
-            mimeType = obj.optString("mime").takeIf { it.isNotEmpty() } ?: defaultMimeType(type),
             showInPanel = obj.optBoolean("panel", true),
         )
     }
@@ -126,7 +122,6 @@ class ShortcutRepository private constructor(private val appContext: Context) {
         put("uri", shortcut.uri)
         put("type", shortcut.targetType.name)
         put("icon", shortcut.iconKey)
-        put("mime", shortcut.mimeType)
         put("panel", shortcut.showInPanel)
     }
 
@@ -148,38 +143,6 @@ class ShortcutRepository private constructor(private val appContext: Context) {
 
 fun newShortcutId(): String = UUID.randomUUID().toString()
 
-/**
- * Resolves the target type from the picked content URI, falling back to the display
- * name and finally to [TargetType.UNKNOWN].
- */
-fun resolveTargetType(context: Context, uri: Uri): TargetType {
-    val mime = context.contentResolver.getType(uri)
-    if (mime != null) {
-        if (mime.startsWith("image/")) return TargetType.IMAGE
-        if (mime.startsWith("video/")) return TargetType.VIDEO
-    }
-    val name = queryDisplayName(context, uri).orEmpty().lowercase()
-    return when {
-        IMAGE_EXTENSIONS.any { name.endsWith(it) } -> TargetType.IMAGE
-        VIDEO_EXTENSIONS.any { name.endsWith(it) } -> TargetType.VIDEO
-        else -> TargetType.UNKNOWN
-    }
-}
-
-fun defaultMimeType(type: TargetType): String = when (type) {
-    TargetType.IMAGE -> "image/*"
-    TargetType.VIDEO -> "video/*"
-    TargetType.UNKNOWN -> "*/*"
-}
-
-fun queryDisplayName(context: Context, uri: Uri): String? = runCatching {
-    context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
-        if (cursor.moveToFirst()) cursor.getString(0) else null
-    }
-}.getOrNull()
-
-private val IMAGE_EXTENSIONS = listOf(".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".heic", ".heif")
-private val VIDEO_EXTENSIONS = listOf(".mp4", ".mkv", ".mov", ".avi", ".webm", ".3gp", ".m4v", ".ts")
 
 private fun <T> JSONArray?.mapObjects(transform: (JSONObject) -> T?): List<T> {
     if (this == null) return emptyList()

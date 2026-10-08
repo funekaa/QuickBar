@@ -69,7 +69,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picdraw.quickbar.R
 import com.picdraw.quickbar.data.DirectSlotCount
 import com.picdraw.quickbar.data.IconCatalog
-import com.picdraw.quickbar.data.Opener
 import com.picdraw.quickbar.data.QuickBarState
 import com.picdraw.quickbar.data.RomCompat
 import com.picdraw.quickbar.data.Shortcut
@@ -78,7 +77,6 @@ import com.picdraw.quickbar.data.TargetType
 import com.picdraw.quickbar.data.TileAdder
 import com.picdraw.quickbar.data.TileAvailability
 import com.picdraw.quickbar.data.Tiles
-import com.picdraw.quickbar.data.defaultMimeType
 import com.picdraw.quickbar.data.newShortcutId
 import com.picdraw.quickbar.data.queryDisplayName
 import com.picdraw.quickbar.data.resolveTargetType
@@ -163,10 +161,7 @@ class MainActivity : ComponentActivity() {
     private fun toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
     private fun adoptPickedFile(uri: Uri) {
-        val mime = contentResolver.getType(uri).orEmpty()
-        if (mime.isBlank()) {
-            toast(getString(R.string.error_unknown_mime))
-        }
+        val type = resolveTargetType(this, uri)
         val persisted = runCatching {
             contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }.isSuccess
@@ -179,9 +174,8 @@ class MainActivity : ComponentActivity() {
                 id = newShortcutId(),
                 title = queryDisplayName(this, uri).orEmpty(),
                 uri = uri.toString(),
-                targetType = resolveTargetType(this, uri),
+                targetType = type,
                 iconKey = IconCatalog.DEFAULT_KEY,
-                mimeType = mime.ifBlank { defaultMimeType(resolveTargetType(this, uri)) },
                 showInPanel = true,
             ),
         )
@@ -413,7 +407,7 @@ private fun ShortcutRow(shortcut: Shortcut, boundSlotLabel: String?, onClick: ()
                 text = buildString {
                     append(stringResource(R.string.label_type, stringResource(typeLabelRes(shortcut.targetType))))
                     boundSlotLabel?.let {
-                        append("  ·  ")
+                        append("  路  ")
                         append(it)
                     }
                 },

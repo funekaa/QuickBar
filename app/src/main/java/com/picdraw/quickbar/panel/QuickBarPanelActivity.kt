@@ -2,7 +2,6 @@ package com.picdraw.quickbar.panel
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -45,10 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.picdraw.quickbar.R
 import com.picdraw.quickbar.data.IconCatalog
-import com.picdraw.quickbar.data.Opener
 import com.picdraw.quickbar.data.Shortcut
 import com.picdraw.quickbar.data.ShortcutRepository
 import com.picdraw.quickbar.ui.MainActivity
+import com.picdraw.quickbar.ui.ViewerActivity
 import com.picdraw.quickbar.ui.theme.QuickBarTheme
 
 /**
@@ -81,8 +80,6 @@ private fun PanelSurface(onDismiss: () -> Unit, onOpenManager: () -> Unit) {
     val context = LocalContext.current
     val state by ShortcutRepository.get(context).state.collectAsStateWithLifecycle()
     val shortcuts = state.panelShortcuts()
-
-    fun toast(resId: Int) = Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG).show()
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.55f))) {
         // Tapping the dimmed area closes the panel.
@@ -123,14 +120,9 @@ private fun PanelSurface(onDismiss: () -> Unit, onOpenManager: () -> Unit) {
                 ) {
                     items(shortcuts, key = { it.id }) { shortcut ->
                         PanelCell(shortcut = shortcut) {
-                            when {
-                                !Opener.hasPersistedAccess(context, shortcut) ->
-                                    toast(R.string.error_persist_permission)
-
-                                !Opener.open(context, shortcut) -> toast(R.string.error_no_viewer)
-
-                                else -> onDismiss()
-                            }
+                            // The panel is already foreground, so the viewer can start directly.
+                            context.startActivity(ViewerActivity.intent(context, shortcut.id))
+                            onDismiss()
                         }
                     }
                 }

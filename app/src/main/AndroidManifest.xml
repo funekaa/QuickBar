@@ -43,7 +43,7 @@
         <!--
             Launched by the quick settings tile, which runs as the SystemUI uid, so this
             activity has to be exported. It only renders the local shortcut list and forwards
-            the tap on to the user's own file, so nothing is passed in through the Intent.
+            the tap on to the viewer's own activity, so nothing is passed in through the Intent.
         -->
         <activity
             android:name=".panel.QuickBarPanelActivity"
@@ -55,16 +55,15 @@
             android:theme="@style/Theme.QuickBar.Panel" />
 
         <!--
-            Trampoline for direct tile taps. Exported for the same reason as the panel above,
-            and it accepts only a shortcut id that is looked up in this app's own storage.
+            The built-in viewer. Exported for the same reason as the panel above, and it
+            accepts only a shortcut id that is looked up in this app's own storage.
         -->
         <activity
-            android:name=".panel.ShortcutLaunchActivity"
-            android:excludeFromRecents="true"
+            android:name=".ui.ViewerActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize"
+            android:excludeFromRecents="false"
             android:exported="true"
-            android:noHistory="true"
-            android:taskAffinity=""
-            android:theme="@style/Theme.QuickBar.Panel" />
+            android:theme="@style/Theme.QuickBar.Viewer" />
 
         <!--
             Panel tile: one tap expands the full shortcut grid.

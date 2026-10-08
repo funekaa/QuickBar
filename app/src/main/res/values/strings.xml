@@ -40,6 +40,7 @@
     <string name="field_title">Name</string>
     <string name="field_title_hint">Shortcut name</string>
     <string name="field_show_in_panel">Show in QuickBar panel</string>
+    <string name="error_decode_failed">This file could not be decoded</string>
     <string name="field_icon">Icon</string>
     <string name="label_type">Type: %1$s</string>
     <string name="label_bound_to">Bound: %1$s</string>
@@ -68,10 +69,8 @@
     <!-- Empty / error states -->
     <string name="empty_shortcuts">No shortcuts yet. Tap + to add an image or a video.</string>
     <string name="empty_panel">No shortcuts to show. Add one, or enable it for the panel.</string>
-    <string name="error_no_viewer">No app can open this file</string>
     <string name="error_persist_permission">Access to this file was lost. Pick the file again to restore the shortcut.</string>
     <string name="error_shortcut_missing">This shortcut no longer exists</string>
-    <string name="error_unknown_mime">Could not read the file type. The shortcut may not open correctly.</string>
     <string name="error_open_settings">Could not open the settings screen</string>
     <string name="error_tile_add_unsupported">This Android version cannot add tiles from an app. Open the shade, tap edit (pencil) and pick a QuickBar tile.</string>
 

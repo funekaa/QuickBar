@@ -40,6 +40,7 @@
     <string name="field_title">名称</string>
     <string name="field_title_hint">快捷方式名称</string>
     <string name="field_show_in_panel">在快捷栏面板中显示</string>
+    <string name="error_decode_failed">无法解码该文件</string>
     <string name="field_icon">图标</string>
     <string name="label_type">类型：%1$s</string>
     <string name="label_bound_to">已绑定：%1$s</string>
@@ -67,10 +68,8 @@
     <!-- Empty / error states -->
     <string name="empty_shortcuts">还没有快捷方式。点 + 选择一张图片或一个视频。</string>
     <string name="empty_panel">面板里还没有内容。先添加快捷方式，或让它在面板中显示。</string>
-    <string name="error_no_viewer">没有可以打开该文件的应用</string>
     <string name="error_persist_permission">已丢失该文件的访问权限，请重新选择一次文件以恢复快捷方式。</string>
     <string name="error_shortcut_missing">该快捷方式已不存在</string>
-    <string name="error_unknown_mime">无法识别文件类型，该快捷方式可能无法正常打开。</string>
     <string name="error_open_settings">无法打开设置界面</string>
     <string name="error_tile_add_unsupported">当前系统版本不支持从应用内添加磁贴。请下拉控制中心，点编辑（铅笔）按钮，手动添加快捷栏磁贴。</string>
 

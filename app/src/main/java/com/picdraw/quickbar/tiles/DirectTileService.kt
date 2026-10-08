@@ -3,7 +3,7 @@ package com.picdraw.quickbar.tiles
 import androidx.annotation.StringRes
 import com.picdraw.quickbar.R
 import com.picdraw.quickbar.data.ShortcutRepository
-import com.picdraw.quickbar.panel.ShortcutLaunchActivity
+import com.picdraw.quickbar.ui.ViewerActivity
 
 /**
  * One-tap access to a single bound shortcut.
@@ -36,17 +36,13 @@ abstract class DirectTileService : BaseQuickBarTileService() {
     }
 
     override fun onClick() {
-        val shortcut = ShortcutRepository.get(this).state.value.shortcutForSlot(slot)
-        if (shortcut == null) {
+        val shortcut = ShortcutRepository.get(this).state.value.shortcutForSlot(slot) ?: run {
             render()
             return
         }
-        // Goes through a foreground trampoline rather than startActivity() on the service,
-        // which MIUI/HyperOS refuses once the app is not in the foreground.
-        startAndCollapse(
-            ShortcutLaunchActivity.intent(this, shortcut.id),
-            REQUEST_CODE_BASE + slot,
-        )
+        // The viewer is a real activity launched by the system on our behalf, which is what
+        // keeps this working while the app itself is closed on MIUI and HyperOS.
+        startAndCollapse(ViewerActivity.intent(this, shortcut.id), REQUEST_CODE_BASE + slot)
     }
 
     private companion object {
